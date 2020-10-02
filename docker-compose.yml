@@ -2,5 +2,6 @@ version: '3'
 services: 
     server:
         build: .
+        image: kkonovod/msg-srv
         ports: 
             - "3333:3333"
