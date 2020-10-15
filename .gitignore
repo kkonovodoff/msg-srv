@@ -1,2 +1,10 @@
 /target
 /Cargo.lock
+
+/terraform/.terraform
+/terraform/vars.tf
+/terraform/terraform.tfstate
+/terraform/terraform.tfstate.backup
+
+/terraform/ansible/master-hosts
+/terraform/ansible/node-hosts
