@@ -1,0 +1,70 @@
+- hosts: all
+  become: true
+
+  tasks:
+    - name: Add Docker GPG apt key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker repository
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu focal stable
+        state: present
+
+    - name: Update apt and install docker-ce/docker-ce-cli/containerd.io
+      apt:
+        name: "{{ packages }}"
+        update_cache: yes
+        state: latest
+      vars:
+        packages:
+            - docker-ce
+            - docker-ce-cli
+            - containerd.io
+
+    - name: Install kubeadm's needed tools
+      apt:
+        name: "{{ packages }}"
+        state: present
+      vars:
+        packages:
+            - apt-transport-https
+            - curl
+
+    - name: Add k8s GPG apt key
+      apt_key:
+        url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+        state: present
+
+    - name: Add k8s repository
+      apt_repository:
+        repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
+        state: present
+    
+    - name: Update apt and install kubelet/kubeadm/kubectl
+      apt:
+        name: "{{ packages }}"
+        update_cache: yes
+        state: latest
+      vars:
+        packages:
+            - kubelet
+            - kubeadm
+            - kubectl
+
+    - name: Prevent kubelet pkg from being upgraded
+      dpkg_selections:
+        name: kubelet
+        selection: hold
+
+    - name: Prevent kubeadm pkg from being upgraded
+      dpkg_selections:
+        name: kubeadm
+        selection: hold
+    
+    - name: Prevent kubectl from being upgraded
+      dpkg_selections:
+        name: kubectl
+        selection: hold
+      
